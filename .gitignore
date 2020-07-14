@@ -1,0 +1,12 @@
+# python
+
+.venv/
+__pycache__/
+*.pyc
+
+# user generated
+
+.freelancer/*_sample*
+.freelancer/*.mp4
+
+*.log

@@ -1,0 +1,27 @@
+{
+    "cSpell.words": [
+        "asyncio",
+        "boto",
+        "botocore",
+        "datefmt",
+        "dotenv",
+        "elibrary",
+        "ffmpeg",
+        "getenv",
+        "mibmglobal",
+        "moviepy"
+    ],
+    "commentBox.styles": {
+        "pythonicStyle": {
+            "commentStartToken": "",
+            "commentEndToken": "##",
+            "leftEdgeToken": "# ",
+            "rightEdgeToken": " #",
+            "topEdgeToken": "#",
+            "bottomEdgeToken": "#",
+            "topRightToken": "##",
+            "bottomLeftToken": "##"
+        }
+    },
+    "python.pythonPath": "/home/skd/Work/bot-python-transcribe/.venv/bin/python3.6"
+}
