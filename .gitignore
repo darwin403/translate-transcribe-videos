@@ -6,7 +6,9 @@ __pycache__/
 
 # user generated
 
+*.log
+
+.env.*
+
 .freelancer/*_sample*
 .freelancer/*.mp4
-
-*.log

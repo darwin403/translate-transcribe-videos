@@ -1,17 +1,34 @@
-from dotenv import load_dotenv
-import os
-import logging, coloredlogs
+#! /usr/bin/python
 
-# Configure logging
+import logging
+import os
+from pathlib import Path
+
+import coloredlogs
+from dotenv import load_dotenv
+
+
+PROJECT_ROOT = Path(__file__).parent
+
+
+#####################
+# CONFIGURE LOGGING #
+#####################
+
+LOG_PATH = str(PROJECT_ROOT / "worker.log")
+
 logging.basicConfig(
-    filename="worker.log",
+    filename=LOG_PATH,
     filemode="a+",
     format="%(asctime)s,%(msecs)d [%(name)s] %(levelname)s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 coloredlogs.install(fmt="%(asctime)s [%(programname)s] %(levelname)s %(message)s")
 
-# Load environment variables
+#################
+# ENV VARIABLES #
+#################
+
 load_dotenv()
 load_dotenv(".env.local", override=True)
 
@@ -32,4 +49,3 @@ MYSQL_HOST = os.getenv("MYSQL_HOST")
 MYSQL_USER = os.getenv("MYSQL_USER")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
 MYSQL_DB = os.getenv("MYSQL_DB")
-

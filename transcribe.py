@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 import hashlib
 import json
 import sys

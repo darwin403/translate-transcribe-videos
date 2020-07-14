@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 import pymysql.cursors
 
 import transcribe
@@ -15,6 +17,7 @@ connection = pymysql.connect(
 logging.info("Worker started")
 
 with connection.cursor() as cursor:
+    # find videos
     cursor.execute(
         "SELECT `id`,`videoUrl`, `status` FROM `uploadVideos` WHERE `status` in (1,3)"
     )
