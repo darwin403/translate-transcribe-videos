@@ -6,9 +6,15 @@ from pathlib import Path
 
 import coloredlogs
 from dotenv import load_dotenv
-
+from moviepy.config import change_settings
 
 PROJECT_ROOT = Path(__file__).parent
+
+####################
+# CONFIGURE FFMPEG #
+####################
+
+change_settings({"FFMPEG_BINARY": os.getenv("IMAGEIO_FFMPEG_EXE")})
 
 
 #####################
