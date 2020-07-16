@@ -7,7 +7,7 @@ from pathlib import Path
 import coloredlogs
 from dotenv import load_dotenv
 
-PROJECT_ROOT = Path(__file__).parent
+PROJECT_ROOT = Path(__file__).parent.resolve()
 
 #####################
 # CONFIGURE LOGGING #
@@ -27,8 +27,14 @@ coloredlogs.install(fmt="%(asctime)s [%(programname)s] %(levelname)s %(message)s
 # ENV VARIABLES #
 #################
 
-load_dotenv()
-load_dotenv(".env.local", override=True)
+ENV_PATH = str(PROJECT_ROOT / ".env")
+ENV_LOCAL_PATH = str(PROJECT_ROOT / ".env.local")
+
+# load default variables
+load_dotenv(ENV_PATH)
+
+# overide variables with .env.local
+load_dotenv(ENV_LOCAL_PATH, override=True)
 
 #######
 # AWS #
