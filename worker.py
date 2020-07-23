@@ -33,7 +33,7 @@ with connection.cursor() as cursor:
         # NEW UPLOAD #
         ##############
         if video["status"] == 1:
-            result = transcribe.process(video["videoUrl"])
+            result = transcribe.process(input_path=video["videoUrl"],trim=False)
 
             # update row
             cursor.execute(

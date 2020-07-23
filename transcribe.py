@@ -6,6 +6,8 @@ import sys
 import time
 import urllib
 from pathlib import Path
+import os
+import shutil
 
 import boto3
 
@@ -25,10 +27,15 @@ TRIM_START = 0  # seconds
 TRIM_END = 59  # seconds
 
 
-def process(INPUT_PATH, OUTPUT_DIR=None):
+def process(input_path, output_dir=None, trim=True):
 
-    input_path = Path(INPUT_PATH).resolve()
-    output_dir = Path(OUTPUT_DIR).resolve() if OUTPUT_DIR else input_path.parent
+    input_path = Path(input_path).resolve()
+    output_dir = Path(output_dir).resolve() if output_dir else input_path.parent
+
+    # create output dir
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
     output_file = input_path.stem + "_sample" + input_path.suffix
     output_path = output_dir / output_file
     json_file = input_path.stem + "_sample.json"
@@ -45,15 +52,23 @@ def process(INPUT_PATH, OUTPUT_DIR=None):
     ##############
     # TRIM VIDEO #
     ##############
-    logging.info("Trimming video: %s" % input_path)
 
-    # trim video
-    ffmpeg_extract_subclip(input_path, TRIM_START, TRIM_END, targetname=output_path)
-    logging.info("Saved to: %s" % output_path)
+    if trim:
+        logging.info("Trimming video: %s" % input_path)
+
+        # trim video
+        ffmpeg_extract_subclip(input_path, TRIM_START, TRIM_END, targetname=output_path)
+        logging.info("Saved to: %s" % output_path)
+    else:
+        logging.info("Coppied video: %s" % output_path)
+
+        # copy video
+        shutil.copy(input_path, output_path)
 
     ####################
     # UPLOAD TO AWS S3 #
     ####################
+
     s3 = boto3.client(
         "s3",
         aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -72,18 +87,15 @@ def process(INPUT_PATH, OUTPUT_DIR=None):
         logging.warning(e)
 
     # upload file
-    try:
-        s3.head_object(Bucket=AWS_BUCKET_NAME, Key=output_path)
-        logging.info("Uploaded file (EXISTS): %s" % output_path)
-    except ClientError as e:
-        s3.upload_file(output_path, AWS_BUCKET_NAME, output_path)
-        logging.info("Uploaded file: %s" % output_path)
+    s3.upload_file(output_path, AWS_BUCKET_NAME, output_path)
+    logging.info("Uploaded file: %s" % output_path)
 
     ######################
     # TRANSCRIBE S3 FILE #
     ######################
 
     output_hash = hashlib.md5(open(output_path, "rb").read()).hexdigest()
+    logging.info("File hash: %s" % output_hash)
 
     transcribe = boto3.client(
         "transcribe",
@@ -140,6 +152,6 @@ if __name__ == "__main__":
     INPUT_PATH = sys.argv[1]
     OUTPUT_DIR = sys.argv[2] if len(sys.argv) >= 3 else None
 
-    paths = process(INPUT_PATH, OUTPUT_DIR)
+    paths = process(input_path=INPUT_PATH, output_dir=OUTPUT_DIR, trim=False)
 
     logging.info("Result: %s" % paths)
